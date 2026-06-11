@@ -18,18 +18,14 @@ class MenuGaveta extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.blue,
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Color(0xFF1565C0),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
-                  Icons.directions_car,
-                  color: Colors.white,
-                  size: 48,
-                ),
+              children: [
+                Icon(Icons.local_shipping_outlined, color: Colors.white, size: 48),
                 SizedBox(height: 8),
                 Text(
                   'Gestor de Motoristas',
@@ -43,7 +39,7 @@ class MenuGaveta extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.home),
+            leading: const Icon(Icons.home_outlined),
             title: const Text('Início'),
             onTap: () {
               Navigator.pop(context);
@@ -51,7 +47,7 @@ class MenuGaveta extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person),
+            leading: const Icon(Icons.people_outline),
             title: const Text('Motoristas'),
             onTap: () {
               Navigator.pop(context);
@@ -60,7 +56,7 @@ class MenuGaveta extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.info),
+            leading: const Icon(Icons.info_outline),
             title: const Text('Sobre'),
             onTap: () {
               Navigator.pop(context);
