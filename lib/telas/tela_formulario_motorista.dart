@@ -14,8 +14,6 @@ class TelaFormularioMotorista extends StatefulWidget {
 }
 
 class _TelaFormularioMotoristaState extends State<TelaFormularioMotorista> {
-  final _formKey = GlobalKey<FormState>();
-
   late TextEditingController nomeController;
   late TextEditingController telefoneController;
   late TextEditingController observacaoController;
@@ -51,6 +49,7 @@ class _TelaFormularioMotoristaState extends State<TelaFormularioMotorista> {
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 3650)),
     );
+
     if (data != null) {
       setState(() {
         validadeCnh = data;
@@ -59,19 +58,13 @@ class _TelaFormularioMotoristaState extends State<TelaFormularioMotorista> {
   }
 
   Future<void> _salvarMotorista() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
     final motorista = Motorista(
       id: widget.motorista?.id,
       nome: nomeController.text,
       telefone: telefoneController.text,
       categoriaCnh: categoriaCnh,
       validadeCnh: validadeCnh,
-      observacao: observacaoController.text.isEmpty
-          ? 'Sem observação'
-          : observacaoController.text,
+      observacao: observacaoController.text,
       createdAt: widget.motorista?.createdAt ?? DateTime.now(),
     );
 
@@ -94,86 +87,73 @@ class _TelaFormularioMotoristaState extends State<TelaFormularioMotorista> {
       appBar: AppBar(
         title: Text(widget.motorista == null ? 'Novo motorista' : 'Editar motorista'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: nomeController,
+        child: Column(
+          children: [
+            TextField(
+              controller: nomeController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Nome',
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: telefoneController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Telefone',
+              ),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              initialValue: categoriaCnh,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Categoria da CNH',
+              ),
+              items: const ['A', 'B', 'C', 'D', 'E']
+                  .map(
+                    (categoria) => DropdownMenuItem(
+                      value: categoria,
+                      child: Text(categoria),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    categoriaCnh = value;
+                  });
+                }
+              },
+            ),
+            const SizedBox(height: 12),
+            InkWell(
+              onTap: _selecionarData,
+              child: InputDecorator(
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Nome',
+                  labelText: 'Validade da CNH',
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Preencha o nome.';
-                  }
-                  return null;
-                },
+                child: Text(DateFormat('dd/MM/yyyy').format(validadeCnh)),
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: telefoneController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Telefone',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Preencha o telefone.';
-                  }
-                  return null;
-                },
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: observacaoController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Observação',
               ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: categoriaCnh,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Categoria da CNH',
-                ),
-                items: const ['A', 'B', 'C', 'D', 'E']
-                    .map((categoria) => DropdownMenuItem(
-                          value: categoria,
-                          child: Text(categoria),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      categoriaCnh = value;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 12),
-              InkWell(
-                onTap: _selecionarData,
-                child: InputDecorator(
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Validade da CNH',
-                  ),
-                  child: Text(DateFormat('dd/MM/yyyy').format(validadeCnh)),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: observacaoController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Observação',
-                ),
-              ),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: _salvarMotorista,
-                child: const Text('Salvar'),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: _salvarMotorista,
+              child: const Text('Salvar'),
+            ),
+          ],
         ),
       ),
     );
